@@ -7,94 +7,29 @@ import zipfile
 import io
 import os
 import subprocess
+from streamlit.components.v1 import html
 
 # =========================================================
 # ✅ CUSTOM UI STYLING (does NOT affect your logic)
 # =========================================================
 
-st.set_page_config(page_title="Price Comparison Tool", layout="wide")
-
-# Inject custom CSS
 st.markdown("""
 <style>
-
-/* Import Poppins font */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
-
-html, body, [class*="css"]  {
-    font-family: 'Poppins', sans-serif;
-}
-
-/* Background gradient */
-body {
-    background: linear-gradient(180deg, #f7f7f7 0%, #ffffff 45%) !important;
-}
-
-/* Top contact bar */
-.top-bar {
-    background: #ffffff;
-    padding: 6px 30px;
-    font-size: 13px;
-    color: #111;
-    border-bottom: 1px solid #e5e5e5;
-}
-
-/* Header main bar */
-.header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #ffffff;
-    padding: 12px 30px;
-    border-bottom: 1px solid #eee;
-}
-
-/* Logo */
-.header img {
-    height: 55px;
-}
-
-/* Menu buttons */
-.navbar {
-    display: flex;
-    gap: 18px;
-}
-.nav-btn {
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-weight: 500;
-    color: #000;
-    text-decoration: none;
-    background: transparent;
-    border: 1px solid transparent;
-    transition: 0.2s;
-}
-.nav-btn:hover {
-    border-bottom: 2px solid #ff7a00;
-    color: #ff7a00;
-}
-
-/* Orange buttons for Streamlit */
-.stButton>button {
-    background-color: #ff7a00 !important;
-    color: white !important;
-    border-radius: 6px;
-    padding: 8px 18px;
-    font-weight: 600;
-    border: none;
-}
-.stButton>button:hover {
-    background-color: #e36a00 !important;
-    transform: translateY(-1px);
-}
-
-/* Form container sections */
-.block-container {
-    padding-top: 1rem !important;
-}
-
+html, body, [class*="css"] { font-family: 'Poppins', sans-serif; }
+body { background: linear-gradient(180deg, #f7f7f7 0%, #ffffff 45%) !important; }
+.top-bar { background:#fff; padding:6px 30px; font-size:13px; color:#111; border-bottom:1px solid #e5e5e5; }
+.header { display:flex; align-items:center; justify-content:space-between; background:#fff; padding:12px 30px; border-bottom:1px solid #eee; }
+.header img { height:55px; }
+.navbar { display:flex; gap:18px; }
+.nav-btn { padding:8px 16px; border-radius:6px; font-weight:500; color:#000; text-decoration:none; background:transparent; border:1px solid transparent; transition:.2s; }
+.nav-btn:hover { border-bottom:2px solid #ff7a00; color:#ff7a00; }
+.stButton>button { background:#ff7a00 !important; color:#fff !important; border-radius:6px; padding:8px 18px; font-weight:600; border:none; }
+.stButton>button:hover { background:#e36a00 !important; transform: translateY(-1px); }
+.block-container { padding-top: 1rem !important; }
 </style>
 """, unsafe_allow_html=True)
+
 
 # =========================================================
 # ✅ HEADER HTML (matches PaulPromo style)
@@ -121,6 +56,7 @@ st.markdown(f"""
 # =========================================================
 # ✅ --- ORIGINAL APP BELOW (UNTOUCHED) ---
 # =========================================================
+html("""<div>...same header html...</div>""", height=110)
 
 st.title("Price Comparison Tool")
 
