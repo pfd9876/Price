@@ -14,7 +14,7 @@ st.title("Price Comparison Tool")
 # --- File Uploads ---
 st.header("Upload Supplier Files")
 van_file   = st.file_uploader("Vanoirschot Excel (.xlsx)", type=["xlsx"], key="van")
-facq_file  = st.file_uploader("Facq Excel (.xls)", type=["xls"], key="facq")
+facq_file  = st.file_uploader("Facq Excel (.xlsx)", type=["xlsx"], key="facq")
 desco_file = st.file_uploader("Desco Excel (.xlsx)", type=["xlsx"], key="desco")
 
 st.header("Upload Store CSV")
@@ -23,11 +23,11 @@ store_file = st.file_uploader("Store CSV file", type=["csv"], key="store")
 def read_excel_smart(file, name):
     if file is None: return None
     suffix = Path(name).suffix.lower()
-    if suffix == ".xls":
+    if suffix == ".xlsx":
         try:
             return pd.read_excel(file, header=0, engine="xlrd", dtype=str)
         except ImportError:
-            st.error("Reading XLS requires xlrd==1.2.0. Install: pip install 'xlrd==1.2.0'")
+            st.error("Reading xlsx requires xlrd==1.2.0. Install: pip install 'xlrd==1.2.0'")
             return None
     return pd.read_excel(file, header=0, dtype=str)
 
