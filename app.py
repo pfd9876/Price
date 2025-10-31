@@ -25,7 +25,7 @@ def read_excel_smart(file, name):
     suffix = Path(name).suffix.lower()
     if suffix == ".xlsx":
         try:
-            return pd.read_excel(file, header=0, engine="xlrd", dtype=str)
+            return pd.read_excel(file, header=0, engine="openpyxl", dtype=str)
         except ImportError:
             st.error("Reading xlsx requires xlrd==1.2.0. Install: pip install 'xlrd==1.2.0'")
             return None
