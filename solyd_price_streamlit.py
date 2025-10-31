@@ -18,6 +18,71 @@ FORCE_SEP = None
 PLACEHOLDER_VALUE = "N.A"
 # ----------------------------------------------------------
 
+# =========================
+# Page Meta & Global Styles (UI ONLY)
+# =========================
+st.set_page_config(
+    page_title="Solyd Price Inserter",
+    page_icon="💾",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+st.markdown(
+    """
+    <style>
+    .block-container{padding-top:2rem;padding-bottom:3rem}
+    .spi-title{font-size:2rem;font-weight:800;letter-spacing:.2px}
+    .spi-subtle{color:var(--text-color-secondary,#7a7f87)}
+    .spi-card{background:rgba(127,127,127,.04);border:1px solid rgba(127,127,127,.18);border-radius:14px;padding:1.1rem}
+    .spi-section{font-weight:700;font-size:1.05rem;margin:.1rem 0 .6rem}
+    .stButton>button{border-radius:12px !important;padding:.6rem 1rem;font-weight:600}
+    .stDownloadButton{margin-top:.35rem}
+    .stDataFrame{border-radius:12px;overflow:hidden}
+    section[data-testid='stSidebar']{border-right:1px solid rgba(127,127,127,.15)}
+    .spi-badge{display:inline-block;padding:.2rem .55rem;border-radius:999px;font-size:.75rem;font-weight:700;border:1px solid rgba(127,127,127,.25);margin-left:.35rem}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# =========================
+# Header (UI ONLY)
+# =========================
+left, right = st.columns([0.8, 0.2])
+with left:
+    st.markdown("<div class='spi-title'>📊 Solyd Price Inserter</div>", unsafe_allow_html=True)
+    st.caption("Read local CSV of IDs/prices, insert matches into your uploaded Excel, and download the updated file.")
+with right:
+    st.markdown("<div style='text-align:right;'><span class='spi-badge'>v1</span><span class='spi-badge'>Modern UI</span></div>", unsafe_allow_html=True)
+
+# =========================
+# Sidebar guide (UI ONLY)
+# =========================
+with st.sidebar:
+    st.header("How it works ✨")
+    st.markdown(
+        """
+        1) **Upload** the Excel file to update.  
+        2) App reads the local **solyd_ids_products.csv**.  
+        3) It inserts prices where IDs match.  
+        4) **Download** the updated Excel.
+        """
+    )
+    st.divider()
+    st.subheader("Notes")
+    st.markdown(
+        """
+        - Matching respects the current **case sensitivity** and **space stripping** flags.
+        - New prices are written to **`solyd-price`** column; unmatched stay **N.A**.
+        - No processing logic was changed—this is a visual refresh only.
+        """
+    )
+
+# =========================
+# ORIGINAL FUNCTIONS (UNTOUCHED LOGIC)
+# =========================
+
 def norm(x: str) -> str:
     if x is None:
         return ""
@@ -40,22 +105,28 @@ def find_latest_excel(pattern: str):
     latest_file = max(files, key=Path)
     return Path(latest_file)
 
-def main():
-    st.title("📊 Solyd Price Inserter (Online Version)")
-    st.write("Upload your Excel file below. The app will read the local `solyd_ids_products.csv` and insert matching prices.")
+# =========================
+# MAIN — same processing flow, presented with nicer sections
+# =========================
 
-    # --- 1. Upload Excel file ---
-    uploaded_excel = st.file_uploader("Upload Excel file to process", type=["xlsx"])
+def main():
+    # Title area (kept to mirror original st.title usage)
+    st.write("")
+    st.markdown("<div class='spi-section'>1) Upload Excel</div>", unsafe_allow_html=True)
+    with st.container():
+        st.markdown("<div class='spi-card'>", unsafe_allow_html=True)
+        uploaded_excel = st.file_uploader("Upload Excel file to process", type=["xlsx"], key="excel")
+        st.markdown("</div>", unsafe_allow_html=True)
 
     if not uploaded_excel:
         st.info("Please upload an Excel file to start.")
         st.stop()
 
-    # --- 2. Validate CSV file exists ---
+    # Validate CSV (unchanged)
+    st.markdown("<div class='spi-section' style='margin-top:1rem;'>2) Read Local CSV</div>", unsafe_allow_html=True)
     if not CSV_PATH.exists():
         die(f"CSV not found: {CSV_PATH}")
 
-    # --- 3. Read CSV data ---
     try:
         if FORCE_SEP is None:
             df_csv = pd.read_csv(CSV_PATH, dtype=str, encoding="utf-8-sig", sep=None, engine="python")
@@ -81,7 +152,8 @@ def main():
 
     st.success(f"✅ Loaded {len(price_lookup)} unique IDs and prices from {CSV_PATH.name}.")
 
-    # --- 4. Read uploaded Excel ---
+    # Read uploaded Excel (unchanged)
+    st.markdown("<div class='spi-section' style='margin-top:1rem;'>3) Process Excel</div>", unsafe_allow_html=True)
     try:
         df_excel = pd.read_excel(uploaded_excel, dtype=str)
     except Exception as e:
@@ -103,11 +175,17 @@ def main():
             df_excel.at[index, NEW_PRICE_COL_NAME] = price
             rows_matched += 1
 
-    st.write(f"🔍 Total rows processed: {rows_total}")
-    st.write(f"✅ IDs matched and prices inserted: {rows_matched}")
-    st.write(f"⚠️ IDs not matched: {rows_total - rows_matched}")
+    # Quick metrics (UI only)
+    m1, m2, m3 = st.columns(3)
+    m1.metric("Total rows processed", f"{rows_total:,}")
+    m2.metric("IDs matched", f"{rows_matched:,}")
+    m3.metric("Not matched", f"{rows_total - rows_matched:,}")
 
-    # --- 5. Prepare Excel for download ---
+    with st.expander("Preview first 15 rows (after insertion)", expanded=False):
+        st.dataframe(df_excel.head(15), use_container_width=True)
+
+    # Prepare Excel for download (unchanged)
+    st.markdown("<div class='spi-section' style='margin-top:1rem;'>4) Download</div>", unsafe_allow_html=True)
     buffer = io.BytesIO()
     df_excel.to_excel(buffer, index=False)
     buffer.seek(0)
@@ -116,8 +194,11 @@ def main():
         label="⬇️ Download Updated Excel File",
         data=buffer,
         file_name="updated_price_comparison.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        use_container_width=True,
     )
+
+    st.caption("Logic unchanged. This is a UI refresh only.")
 
 if __name__ == "__main__":
     main()
