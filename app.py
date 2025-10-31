@@ -272,69 +272,69 @@ if van_file and facq_file and desco_file and store_file:
         progress_bar.progress(100, text="Done!")
 
 # --- Downloads: show if present ---
-if "comparison_file" in st.session_state:
-    st.subheader("Download Outputs")
-    st.download_button(
-        "Download Main Comparison Excel",
-        st.session_state["comparison_file"],
-        file_name=st.session_state["comparison_name"],
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
-    st.download_button(
-        "Download Unmatched/Missing References Excel",
-        st.session_state["no_ref_file"],
-        file_name=st.session_state["no_ref_name"],
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
-    st.download_button(
-        "Download Exact First-Pass Matches Excel",
-        st.session_state["exact_file"],
-        file_name=st.session_state["exact_name"],
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
-
-    # Download all files as ZIP
-    st.subheader("Download ALL output files")
-    zip_buffer = io.BytesIO()
-    with zipfile.ZipFile(zip_buffer, "w") as zipf:
-        zipf.writestr(st.session_state["comparison_name"], st.session_state["comparison_file"])
-        zipf.writestr(st.session_state["no_ref_name"], st.session_state["no_ref_file"])
-        zipf.writestr(st.session_state["exact_name"], st.session_state["exact_file"])
-    zip_buffer.seek(0)
-    st.download_button(
-        label="Download All Output Files as ZIP",
-        data=zip_buffer,
-        file_name=f"price_comparison_outputs_{st.session_state['timestamp']}.zip",
-        mime="application/zip"
-    )
-
-    # --- Save all files into folder ---
-    if st.button("Save All Files to 'output_data' Folder"):
-        save_dir = Path("output_data")
-        save_dir.mkdir(exist_ok=True)
-
-        with open(save_dir / st.session_state["comparison_name"], "wb") as f:
-            f.write(st.session_state["comparison_file"])
-        with open(save_dir / st.session_state["no_ref_name"], "wb") as f:
-            f.write(st.session_state["no_ref_file"])
-        with open(save_dir / st.session_state["exact_name"], "wb") as f:
-            f.write(st.session_state["exact_file"])
-
-        st.success(f"All files saved in {save_dir.resolve()}")
-
-    # --- Run solyd_price.py script ---
-    if st.button("Run solyd_price.py"):
-        try:
-            result = subprocess.run(
-                ["python", "solyd_price.py"],
-                capture_output=True,
-                text=True,
-                check=True
-            )
-            st.success("solyd_price.py executed successfully!")
-            st.text(result.stdout)
-        except subprocess.CalledProcessError as e:
-            st.error(f"Error running solyd_price.py:\n{e.stderr}")
-
+#if "comparison_file" in st.session_state:
+#    st.subheader("Download Outputs")
+#    st.download_button(
+#        "Download Main Comparison Excel",
+#        st.session_state["comparison_file"],
+#        file_name=st.session_state["comparison_name"],
+#        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+#    )
+#    st.download_button(
+#        "Download Unmatched/Missing References Excel",
+#        st.session_state["no_ref_file"],
+#        file_name=st.session_state["no_ref_name"],
+#        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+#    )
+#    st.download_button(
+#        "Download Exact First-Pass Matches Excel",
+#        st.session_state["exact_file"],
+#        file_name=st.session_state["exact_name"],
+#        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+#    )
+#
+#    # Download all files as ZIP
+#    st.subheader("Download ALL output files")
+#    zip_buffer = io.BytesIO()
+#    with zipfile.ZipFile(zip_buffer, "w") as zipf:
+#        zipf.writestr(st.session_state["comparison_name"], st.session_state["comparison_file"])
+#        zipf.writestr(st.session_state["no_ref_name"], st.session_state["no_ref_file"])
+#        zipf.writestr(st.session_state["exact_name"], st.session_state["exact_file"])
+#    zip_buffer.seek(0)
+#    st.download_button(
+#        label="Download All Output Files as ZIP",
+#        data=zip_buffer,
+#        file_name=f"price_comparison_outputs_{st.session_state['timestamp']}.zip",
+#        mime="application/zip"
+#    )
+#
+#    # --- Save all files into folder ---
+#    if st.button("Save All Files to 'output_data' Folder"):
+#        save_dir = Path("output_data")
+#        save_dir.mkdir(exist_ok=True)
+#
+#        with open(save_dir / st.session_state["comparison_name"], "wb") as f:
+#            f.write(st.session_state["comparison_file"])
+#        with open(save_dir / st.session_state["no_ref_name"], "wb") as f:
+#            f.write(st.session_state["no_ref_file"])
+#        with open(save_dir / st.session_state["exact_name"], "wb") as f:
+#            f.write(st.session_state["exact_file"])
+#
+#        st.success(f"All files saved in {save_dir.resolve()}")
+#
+#    # --- Run solyd_price.py script ---
+#    if st.button("Run solyd_price.py"):
+#        try:
+#            result = subprocess.run(
+#                ["python", "solyd_price.py"],
+#                capture_output=True,
+#                text=True,
+#                check=True
+#            )
+#            st.success("solyd_price.py executed successfully!")
+#            st.text(result.stdout)
+#        except subprocess.CalledProcessError as e:
+#            st.error(f"Error running solyd_price.py:\n{e.stderr}")
+#
 else:
     st.info("Please upload all supplier and store files and run the comparison to generate outputs.")
