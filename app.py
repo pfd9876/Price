@@ -8,6 +8,22 @@ import io
 import os
 import subprocess
 
+
+# --- Header Markup (no logic changes) ---
+st.markdown("""
+<div class="pp-brand">
+  <div class="pp-logo">PAULPROMO</div>
+  <div class="pp-pill">Livraison 72h • Prix imbattables</div>
+</div>
+""", unsafe_allow_html=True)
+
+# --- Header config (no logic changes) ---
+HERO_URL = "https://your.cdn.com/path/to/hero.jpg"  # put your image URL here; leave "" for gradient only
+palette = {
+    "accent": "#ff7a00",   # pill + logo color
+    "text":   "#ffffff"    # hero text color
+}
+
 # =========================
 # Page Meta & Global Styles
 # =========================
@@ -61,6 +77,36 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+# --- Header CSS (no logic changes) ---
+hero_bg = f'url("{HERO_URL}")' if HERO_URL else "linear-gradient(180deg, #111 0%, #333 100%)"
+
+st.markdown(f"""
+<style>
+.main .block-container {{
+  padding-top: 0.6rem; padding-left: 0; padding-right: 0; max-width: 100%;
+}}
+.pp-brand {{
+  width: 100%;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 0 24px;
+  padding-top: 30px;
+}}
+.pp-logo {{ font-weight: 900; letter-spacing: .5px; font-size: 28px; color: {palette["accent"]}; }}
+.pp-pill {{
+  background: {palette["accent"]}; color: white; font-weight: 800;
+  padding: 6px 12px; border-radius: 999px; font-size: 12px; margin-right: 4px;
+}}
+
+/* keep your modern UI vibes consistent */
+.pp-card {{ background: white; border-top: 1px solid #eee; padding: 18px 24px; }}
+.stButton>button {{
+  background: {palette["accent"]} !important; color: white !important; border: 0 !important;
+  border-radius: 10px !important; font-weight: 700 !important;
+}}
+.stTextInput>div>div>input, .stSelectbox>div>div>div>div, .stToggle {{ border-radius: 10px !important; }}
+[data-testid="stDataFrame"] > div {{ padding-left: 0 !important; padding-right: 0 !important; }}
+</style>
+""", unsafe_allow_html=True)
 
 # =========================
 # Header
@@ -73,7 +119,7 @@ with right:
     st.markdown("""
         <div style='text-align:right;'>
             <span class='pct-badge'>v1</span>
-            <span class='pct-badge'>Modern UI</span>
+            <span class='pct-badge'>By Yassir</span>
         </div>
     """, unsafe_allow_html=True)
 
