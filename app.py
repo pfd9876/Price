@@ -272,42 +272,42 @@ if van_file and facq_file and desco_file and store_file:
         progress_bar.progress(100, text="Done!")
 
 # --- Downloads: show if present ---
-#if "comparison_file" in st.session_state:
-#    st.subheader("Download Outputs")
-#    st.download_button(
-#        "Download Main Comparison Excel",
-#        st.session_state["comparison_file"],
-#        file_name=st.session_state["comparison_name"],
-#        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-#    )
-#    st.download_button(
-#        "Download Unmatched/Missing References Excel",
-#        st.session_state["no_ref_file"],
-#        file_name=st.session_state["no_ref_name"],
-#        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-#    )
-#    st.download_button(
-#        "Download Exact First-Pass Matches Excel",
-#        st.session_state["exact_file"],
-#        file_name=st.session_state["exact_name"],
-#        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-#    )
-#
-#    # Download all files as ZIP
-#    st.subheader("Download ALL output files")
-#    zip_buffer = io.BytesIO()
-#    with zipfile.ZipFile(zip_buffer, "w") as zipf:
-#        zipf.writestr(st.session_state["comparison_name"], st.session_state["comparison_file"])
-#        zipf.writestr(st.session_state["no_ref_name"], st.session_state["no_ref_file"])
-#        zipf.writestr(st.session_state["exact_name"], st.session_state["exact_file"])
-#    zip_buffer.seek(0)
-#    st.download_button(
-#        label="Download All Output Files as ZIP",
-#        data=zip_buffer,
-#        file_name=f"price_comparison_outputs_{st.session_state['timestamp']}.zip",
-#        mime="application/zip"
-#    )
-#
+if "comparison_file" in st.session_state:
+    st.subheader("Download Outputs")
+    st.download_button(
+        "Download Main Comparison Excel",
+        st.session_state["comparison_file"],
+        file_name=st.session_state["comparison_name"],
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+    st.download_button(
+        "Download Unmatched/Missing References Excel",
+        st.session_state["no_ref_file"],
+        file_name=st.session_state["no_ref_name"],
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+    st.download_button(
+        "Download Exact First-Pass Matches Excel",
+        st.session_state["exact_file"],
+        file_name=st.session_state["exact_name"],
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+    # Download all files as ZIP
+    st.subheader("Download ALL output files")
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, "w") as zipf:
+        zipf.writestr(st.session_state["comparison_name"], st.session_state["comparison_file"])
+        zipf.writestr(st.session_state["no_ref_name"], st.session_state["no_ref_file"])
+        zipf.writestr(st.session_state["exact_name"], st.session_state["exact_file"])
+    zip_buffer.seek(0)
+    st.download_button(
+        label="Download All Output Files as ZIP",
+        data=zip_buffer,
+        file_name=f"price_comparison_outputs_{st.session_state['timestamp']}.zip",
+        mime="application/zip"
+    )
+
 #    # --- Save all files into folder ---
 #    if st.button("Save All Files to 'output_data' Folder"):
 #        save_dir = Path("output_data")
