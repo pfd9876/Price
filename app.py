@@ -191,8 +191,9 @@ if van_file and facq_file and desco_file and store_file:
         base["FACQ Net"]         = base["FACQ Brut"].map(plus_21)
         base["DESCO Net"]        = base["DESCO Brut"].map(plus_21)
 
-        base["_lowest_ref_net"]  = base[["VANOIRSCHOT Net", "FACQ Net", "DESCO Net"]].min(axis=1, skipna=True)
-        base["Lowest Supplier Net"] = base["_lowest_ref_net"]
+        base["_highest_ref_net"] = base[["VANOIRSCHOT Net", "FACQ Net", "DESCO Net"]].max(axis=1, skipna=True)
+        base["Highest Supplier Net"] = base["_highest_ref_net"]
+
 
         base["__exact_first_pass"] = base[["VANOIRSCHOT Brut", "FACQ Brut", "DESCO Brut"]].notna().any(axis=1)
 
@@ -209,7 +210,7 @@ if van_file and facq_file and desco_file and store_file:
             "FACQ Brut", "FACQ Net",
             "DESCO Brut", "DESCO Net",
             "P.Brut", "P.Vente",
-            "Lowest Supplier Net",
+            "Highest Supplier Net",
         ]
         out_df = base[out_cols].sort_values(by="Reference ID", kind="stable")
         progress_bar.progress(80, text="Generating outputs and downloads...")
@@ -240,7 +241,7 @@ if van_file and facq_file and desco_file and store_file:
         final_mask        = mask_no_ref | mask_not_in_excel
 
         no_ref_df = df_store.loc[final_mask].copy()
-        no_ref_df["Lowest Supplier Net"] = pd.NA
+        no_ref_df["Highest Supplier Net"] = pd.NA
         towrite2 = io.BytesIO()
         with pd.ExcelWriter(towrite2, engine="openpyxl") as writer:
             no_ref_df.to_excel(writer, index=False, sheet_name="no_reference")
@@ -253,7 +254,7 @@ if van_file and facq_file and desco_file and store_file:
             "Reference ID Fallback", "Handle", "Product Name",
             "VANOIRSCHOT Brut", "FACQ Brut", "DESCO Brut",
             "VANOIRSCHOT Net", "FACQ Net", "DESCO Net",
-            "P.Brut", "P.Vente", "Lowest Supplier Net"
+            "P.Brut", "P.Vente", "Highest Supplier Net"
         ]].copy()
 
         towrite4 = io.BytesIO()
