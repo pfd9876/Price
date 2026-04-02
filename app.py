@@ -220,7 +220,7 @@ def normalize_sku(s: pd.Series) -> pd.Series:
         s.astype(str)
          .str.replace("\ufeff", "", regex=False)
          .str.replace("\u200b", "", regex=False)
-         .str.replace(r"[\u200e\u200f\u202a\u202c\u2060]", "", regex=True)
+         .str.replace("[\u200e\u200f\u202a\u202c\u2060]", "", regex=True)
          .str.strip()
          .str.lstrip("'’\"")
     )
