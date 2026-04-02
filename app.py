@@ -215,15 +215,22 @@ def plus_21(p):
     except Exception:
         return None
 
+SKU_INVISIBLE_CHARS = (
+    "\ufeff",
+    "\u200b",
+    "\u200e",
+    "\u200f",
+    "\u202a",
+    "\u202c",
+    "\u2060",
+)
+
 def normalize_sku(s: pd.Series) -> pd.Series:
-    return (
-        s.astype(str)
-         .str.replace("\ufeff", "", regex=False)
-         .str.replace("\u200b", "", regex=False)
-         .str.replace(r"[\u200e\u200f\u202a\u202c\u2060]", "", regex=True)
-         .str.strip()
-         .str.lstrip("'’\"")
-    )
+    cleaned = s.astype(str)
+    # PyArrow-backed string arrays reject \u escapes inside regex character classes.
+    for char in SKU_INVISIBLE_CHARS:
+        cleaned = cleaned.str.replace(char, "", regex=False)
+    return cleaned.str.strip().str.lstrip("'’\"")
 
 def clean_code_series(s: pd.Series) -> pd.Series:
     return (
